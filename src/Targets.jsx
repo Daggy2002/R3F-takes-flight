@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Quaternion, TorusGeometry, Vector3 } from "three";
+import { Quaternion, SphereGeometry, TorusGeometry, Vector3 } from "three";
 import { mergeBufferGeometries } from "three-stdlib";
 import { useFrame } from "@react-three/fiber";
 import { planePosition } from "./Airplane";
@@ -12,7 +12,7 @@ function randomPoint(scale) {
   ).multiply(scale || new Vector3(1, 1, 1));
 }
 
-const TARGET_RAD = 0.125;
+const TARGET_RAD = 0.125/2;
 
 export function Targets() {
   const [targets, setTargets] = useState(() => {
@@ -34,7 +34,8 @@ export function Targets() {
     let geo;
 
     targets.forEach((target) => {
-      const torusGeo = new TorusGeometry(TARGET_RAD, 0.02, 8, 25);
+      //Use a sphere for the target
+      const torusGeo = new SphereGeometry(TARGET_RAD, 16, 16);
       torusGeo.applyQuaternion(
         new Quaternion().setFromUnitVectors(
           new Vector3(0, 0, 1),
@@ -72,7 +73,7 @@ export function Targets() {
 
   return (
     <mesh geometry={geometry}>
-      <meshStandardMaterial roughness={0.5} metalness={0.5} />
+      <meshStandardMaterial roughness={0.5} metalness={0.5} emissive={"#00ff00"} />
     </mesh>
   );
 }

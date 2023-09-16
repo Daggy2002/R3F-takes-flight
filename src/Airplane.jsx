@@ -8,6 +8,7 @@ import { useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber';
 import { Matrix4, Quaternion, Vector3 } from 'three';
 import { updatePlaneAxis } from './controls';
+import * as THREE from 'three';
 
 const x = new Vector3(1, 0, 0);
 const y = new Vector3(0, 1, 0);
@@ -20,7 +21,7 @@ const delayedQuaternion = new Quaternion();
 export function Airplane(props) {
   // thanks to:
   // https://sketchfab.com/3d-models/vintage-toy-airplane-7de2ecbc0acb4b1886c3df3d196c366b
-  const { nodes, materials } = useGLTF('assets/models/airplane.glb');
+  const { nodes, materials } = useGLTF('assets/models/spaceShip.glb');
   const groupRef = useRef();
   const helixMeshRef = useRef();
 
@@ -68,20 +69,23 @@ export function Airplane(props) {
     camera.matrix.copy(cameraMatrix);
     camera.matrixWorldNeedsUpdate = true;
 
-    helixMeshRef.current.rotation.z -= 1.0;
+    // helixMeshRef.current.rotation.z -= 1.0;
   });
 
   return (
     <>
       <group ref={groupRef}>
         <group {...props} dispose={null} scale={0.01} rotation-y={Math.PI}>
-          <mesh geometry={nodes.supports.geometry} material={materials['Material.004']} />
+          {/* <mesh geometry={nodes.supports.geometry} material={materials['Material.004']} />
           <mesh geometry={nodes.chassis.geometry} material={materials['Material.005']} />
-          <mesh geometry={nodes.helix.geometry} material={materials['Material.005']} ref={helixMeshRef} />
+          <mesh geometry={nodes.helix.geometry} material={materials['Material.005']} ref={helixMeshRef} /> */}
+          <mesh geometry={nodes.spaceShip.children[0].geometry} material={nodes.spaceShip.children[0].material} scale={0.01} />
+          <mesh geometry={nodes.spaceShip.children[1].geometry} material={nodes.spaceShip.children[1].material} scale={0.01} />
+          <mesh geometry={nodes.spaceShip.children[2].geometry} material={nodes.spaceShip.children[2].material} scale={0.01} />
         </group>
       </group>
     </>
   )
 }
 
-useGLTF.preload('assets/models/airplane.glb');
+useGLTF.preload('assets/models/spaceShip.glb');

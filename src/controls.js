@@ -1,14 +1,36 @@
+import { Howl } from 'howler';
+import soundEffect from '../public/assets/audio/boost.mp3';
+
 function easeOutQuad(x) {
   return 1 - (1 - x) * (1 - x);
 }
 
 export let controls = {};
 
+// Add a flag to track if the sound has been played
+let soundPlayed = false;
+
 window.addEventListener("keydown", (e) => {
   controls[e.key.toLowerCase()] = true;
+
+  if (e.key.toLowerCase() === "shift" && !soundPlayed) {
+    // Create a Howl instance with the desired volume (e.g., 0.2 for softer)
+    const sound = new Howl({
+      src: [soundEffect],
+      volume: 0.2, // Adjust the volume here (0.2 means 20% of the original volume)
+    });
+    sound.play();
+    soundPlayed = true;
+  }
 });
+
 window.addEventListener("keyup", (e) => {
   controls[e.key.toLowerCase()] = false;
+
+  if (e.key.toLowerCase() === "shift") {
+    // Reset the soundPlayed flag when the Shift key is released
+    soundPlayed = false;
+  }
 });
 
 let maxVelocity = 0.04;
@@ -63,9 +85,9 @@ export function updatePlaneAxis(x, y, z, planePosition, camera) {
   y.normalize();
   z.normalize();
 
-
   // plane position & velocity
   if (controls.shift) {
+    // Trigger the sound effect when Shift key is pressed
     turbo += 0.025;
   } else {
     turbo *= 0.95;
@@ -77,5 +99,5 @@ export function updatePlaneAxis(x, y, z, planePosition, camera) {
   camera.fov = 45 + turboSpeed * 900;
   camera.updateProjectionMatrix();
 
-  planePosition.add(z.clone().multiplyScalar(-planeSpeed -turboSpeed));
+  planePosition.add(z.clone().multiplyScalar(-planeSpeed - turboSpeed));
 }
